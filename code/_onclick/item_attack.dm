@@ -87,20 +87,20 @@ avoid code duplication. This includes items that may sometimes act as a standard
 
 // Used to get how fast a mob should use a tool in addition to the tool's native speed
 // I think this is also used for inheritance but I'm a monkey copying the work of whoever did get_attack_speed() so take it with a grain of salt
-/mob/proc/get_tool_speed()
+/mob/proc/get_toolspeed()
 	return DEFAULT_TOOLSPEED
 
 // Here is where we do the math by loking at the item's toolspeed and then adding the mob's toolspeed modifier to it
 // most of the time the mob toolspeed modifier will be 1
 
-/mob/living/get_tool_speed(var/obj/item/T)
-	var/actual_toolspeed = toolspeed_modifier
+/mob/living/get_toolspeed(var/obj/item/T)
+	var/toolspeed = toolspeed_modifier
 	if(T && istype(T))
-		actual_toolspeed = T.toolspeed
+		toolspeed = T.toolspeed
 	for(var/datum/modifier/Z in modifiers)
 		if(!isnull(Z.toolspeed_modifier))
-			actual_toolspeed *= Z.toolspeed_modifier
-	return actual_toolspeed
+			toolspeed *= Z.toolspeed_modifier
+	return toolspeed
 
 // Proximity_flag is 1 if this afterattack was called on something adjacent, in your square, or on your person.
 // Click parameters is the params string from byond Click() code, see that documentation.

@@ -333,3 +333,8 @@
 	max_hal_resistance = 0
 	min_hal_resistance = 0
 	effective_hal_resistance = 1
+
+//toolspeed trait stuff
+
+/datum/modifier/trait/negative/bad_hands
+	toolspeed_modifier = 5
