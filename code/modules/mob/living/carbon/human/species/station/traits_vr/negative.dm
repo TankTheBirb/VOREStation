@@ -194,3 +194,11 @@
 	var_changes = list("bad_swimmer" = 1, "water_movement" = 4, "swim_mult" = 1.25)
 	varchange_type = TRAIT_VARCHANGE_LESS_BETTER
 	excludes = list(/datum/trait/positive/good_swimmer)
+
+/datum/trait/negative/bad_hands
+	name = "Awkward Manipulation"
+	desc = "Your hands/manipulators/graspers just don't quite fit most tools. Increases the time it takes to use tools."
+	cost = -1
+	custom_only = FALSE
+	var_changes = list("toolspeed_modifier" = 5) //make their tool use slightly slower
+	varchange_type = TRAIT_VARCHANGE_LESS_BETTER

@@ -26,6 +26,7 @@
 
 	var/last_special = 0 //Used by the resist verb, likely used to prevent players from bypassing next_move by logging in/out.
 	var/base_attack_cooldown = DEFAULT_ATTACK_COOLDOWN
+	var/toolspeed_modifier = DEFAULT_TOOLSPEED //Makes no modification of toolspeed unless overridden
 
 	var/t_phoron = null
 	var/t_oxygen = null
