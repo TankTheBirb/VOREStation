@@ -255,3 +255,10 @@
 2025-04-24:
   Asher-42:
   - bugfix: resting causing an error
+2025-04-25:
+  Kashargul:
+  - code_imp: some less usr
+  TheCaramelion:
+  - qol: Virus extrapolator can now identify stealthy viruses
+  - rscdel: Removed "old vomit" spreading viruses
+  - bugfix: Makes vaccines work again
