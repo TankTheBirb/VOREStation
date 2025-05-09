@@ -30,12 +30,32 @@
   Will:
   - bugfix: Bioprinter works again
 2025-05-07:
+  SatinIsle:
+  - bugfix: Fixed cave-ins in fantasy dungeon around the dragon
   ShadowLarkens:
   - bugfix: Fixes throw passing (I didn't even know this was a thing)
   - bugfix: Fix spacebar throwing
   - bugfix: Fix appearance changer menu lacking data for species sounds
+  TankTheBirb:
+  - qol: added the ability to pick up floor tiles to the sheet loader gripper that
+      borgs have
   Willburd:
   - bugfix: Virology access buttons no longer depend on init lag to setup their state
       correctly.
   - code_imp: Removed spawn() behavior from airlock program. Added airlock update
       radio command to setup doors on airlock init.
+2025-05-08:
+  Diana:
+  - rscadd: Optional Big Leggies as a marking. These are hidden underneath clothing.
+  - bugfix: Makes Big Leggies (tail) show back above clothing.
+2025-05-09:
+  Diana:
+  - rscadd: Rx variants of omnihuds now selectable in the loadout.
+  Kashargul:
+  - bugfix: some coulcatcher vis and pref issues
+  - code_imp: update tgui core to 3.1.4
+  MeepleMuncher:
+  - bugfix: Fixes runtime errors caused by barefoot sounds.
+  TheCaramelion:
+  - rscadd: Balloon Alerts
+  - refactor: Changed various to_chat to balloon alerts
