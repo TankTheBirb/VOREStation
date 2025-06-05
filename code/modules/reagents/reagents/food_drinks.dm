@@ -367,7 +367,7 @@
 				M.Weaken(2)
 			M.drowsyness = max(M.drowsyness, 20)
 		else
-			M.Sleeping(20)
+			M.Weaken(10)
 			M.drowsyness = max(M.drowsyness, 60)
 
 /datum/reagent/nutriment/mayo
@@ -802,7 +802,7 @@
 	M.adjustToxLoss(0.5 * removed)
 
 /datum/reagent/capsaicin/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
+	// Do not call parent, we don't want this absorbed into our bloodstream!
 	handle_spicy(M, alien, removed)
 
 /datum/reagent/proc/handle_spicy(var/mob/living/carbon/M, var/alien, var/removed)
@@ -1106,7 +1106,7 @@
 					M.Weaken(2)
 				M.drowsyness = max(M.drowsyness, 20)
 			else
-				M.Sleeping(20)
+				M.Weaken(10)
 				M.drowsyness = max(M.drowsyness, 60)
 
 /datum/reagent/drink/juice/lemon
@@ -2098,7 +2098,7 @@
 				M.Weaken(2)
 			M.drowsyness = max(M.drowsyness, 20)
 		else
-			M.Sleeping(20)
+			M.Weaken(10)
 			M.drowsyness = max(M.drowsyness, 60)
 
 /datum/reagent/drink/milkshake/chocoshake
