@@ -10,6 +10,8 @@ export type Data = {
   persist_edit_mode: BooleanLike;
   host_mobtype: hostMob | null;
   our_bellies?: bellyData[] | null;
+  min_belly_name: number;
+  max_belly_name: number;
   selected?: selectedData | null;
   prefs?: prefData | null;
   soulcatcher?: soulcatcherData | null;
@@ -130,7 +132,6 @@ export type bellyOptionData = {
   private_struggle: BooleanLike;
   drainmode_options: string[];
   drainmode: string;
-  mob_belly_controls: siliconeBellyControls;
 };
 
 export type bellySoundData = {
@@ -178,6 +179,7 @@ export type bellyVisualData = {
   tail_option_shown: BooleanLike;
   tail_to_change_to: BooleanLike | string;
   tail_sprite_options: string[];
+  mob_belly_controls: siliconeBellyControls;
 };
 
 export type bellyInteractionData = {
@@ -251,6 +253,8 @@ export type autoTransferOption = {
   autotransfer_blacklist_items: checkBoxEntry[];
 };
 
+type bellyReagent = { name: string; volume: number };
+
 export type liqInteractData = {
   liq_reagent_gen: BooleanLike;
   liq_reagent_type: string;
@@ -279,6 +283,8 @@ export type liqInteractData = {
   max_ingested: number;
   custom_ingested_color: string;
   custom_ingested_alpha: number;
+  total_volume: number;
+  current_reagents: bellyReagent[];
 };
 
 export type prefData = {
@@ -327,6 +333,7 @@ export type prefData = {
   soulcatcher_allow_transfer: BooleanLike;
   soulcatcher_allow_deletion: BooleanLike;
   soulcatcher_allow_takeover: BooleanLike;
+  max_voreoverlay_alpha: number;
 };
 
 export type scMessageData = {
@@ -373,7 +380,7 @@ export type generalPrefData = {
   active_belly: string | null;
   belly_rub_target: string | null;
   aestethic_messages: aestMessageData;
-  vore_sprite_color: Record<string, string>;
+  vore_sprite_color: Record<string, string | undefined>;
   vore_sprite_multiply: Record<string, BooleanLike>;
   vore_icon_options: string[];
 };

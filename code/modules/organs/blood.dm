@@ -278,6 +278,9 @@ var/const/CE_STABLE_THRESHOLD = 0.5
 	for(var/datum/disease/D in GetSpreadableViruses())
 		B.data["viruses"] |= D.Copy()
 
+	for(var/datum/disease/D in GetDormantDiseases())
+		B.data["viruses"] |= D.Copy()
+
 	if(!B.data["resistances"])
 		B.data["resistances"] = list()
 
@@ -361,9 +364,10 @@ var/const/CE_STABLE_THRESHOLD = 0.5
 		if(!our)
 			log_debug("Failed to re-initialize blood datums on [src]!")
 			return
-
-
-	if(blood_incompatible(injected.data["blood_type"],our.data["blood_type"],injected.data["species"],our.data["species"]) )
+	if(is_changeling(src)) //Changelings don't reject blood!
+		vessel.add_reagent(REAGENT_ID_BLOOD, amount, injected.data)
+		vessel.update_total()
+	else if(blood_incompatible(injected.data["blood_type"],our.data["blood_type"],injected.data["species"],our.data["species"]) )
 		reagents.add_reagent(REAGENT_ID_TOXIN,amount * 0.5)
 		reagents.update_total()
 	else
@@ -461,11 +465,12 @@ var/const/CE_STABLE_THRESHOLD = 0.5
 
 	// Update blood information.
 	if(source.data["blood_DNA"])
-		B.blood_DNA = list()
+		var/list/new_data = list()
 		if(source.data["blood_type"])
-			B.blood_DNA[source.data["blood_DNA"]] = source.data["blood_type"]
+			new_data[source.data["blood_DNA"]] = source.data["blood_type"]
 		else
-			B.blood_DNA[source.data["blood_DNA"]] = "O+"
+			new_data[source.data["blood_DNA"]] = "O+"
+		B.init_forensic_data().merge_blooddna(null,new_data)
 
 	// Update virus information.
 	if(source.data["viruses"])

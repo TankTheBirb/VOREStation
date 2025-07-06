@@ -582,7 +582,7 @@ GLOBAL_LIST_EMPTY(active_buildmode_holders)
 						AI.wander = FALSE
 				if(pa.Find("alt") && isatom(object))
 					to_chat(user, span_notice("Adding [object] to Entity Narrate List!"))
-					user.client.add_mob_for_narration(object)
+					SSadmin_verbs.dynamic_invoke_verb(user.client, /datum/admin_verb/add_mob_for_narration, object)
 
 
 			if(pa.Find("right"))
@@ -825,7 +825,7 @@ GLOBAL_LIST_EMPTY(active_buildmode_holders)
 /proc/detect_room_buildmode(var/turf/first, var/allowedAreas = AREA_SPACE)
 	if(!istype(first))
 		return
-	var/list/turf/found = new
+	var/list/turf/found = list()
 	var/list/turf/pending = list(first)
 	while(pending.len)
 		var/turf/T = pending[1]
@@ -860,11 +860,11 @@ GLOBAL_LIST_EMPTY(active_buildmode_holders)
 	if(A.outdoors)
 		return AREA_SPACE
 
-	for (var/type in BUILDABLE_AREA_TYPES)
+	for (var/type in GLOB.BUILDABLE_AREA_TYPES)
 		if ( istype(A,type) )
 			return AREA_SPACE
 
-	for (var/type in SPECIALS)
+	for (var/type in GLOB.SPECIALS)
 		if ( istype(A,type) )
 			return AREA_SPECIAL
 	return AREA_STATION

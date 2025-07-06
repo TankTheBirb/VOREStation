@@ -735,12 +735,9 @@ var/list/global/slot_flags_enumeration = list(
 	//Make the blood_overlay have the proper color then apply it.
 	blood_overlay.color = blood_color
 	add_overlay(blood_overlay)
-
-	//if this blood isn't already in the list, add it
 	if(istype(M))
-		if(blood_DNA[M.dna.unique_enzymes])
-			return 0 //already bloodied with this blood. Cannot add more.
-		blood_DNA[M.dna.unique_enzymes] = M.dna.b_type
+		add_blooddna(M.dna,M)
+
 	return 1 //we applied blood to the item
 
 GLOBAL_LIST_EMPTY(blood_overlays_by_type)
@@ -1026,6 +1023,8 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 
 /obj/item/MouseEntered(location,control,params)
 	. = ..()
+	if(QDELETED(src))
+		return
 	if(usr?.read_preference(/datum/preference/toggle/inv_tooltips) && ((src in usr) || isstorage(loc))) // If in inventory or in storage we're looking at
 		var/user = usr
 		tip_timer = addtimer(CALLBACK(src, PROC_REF(openTip), location, control, params, user), 5, TIMER_STOPPABLE)
@@ -1171,4 +1170,4 @@ Note: This proc can be overwritten to allow for different types of auto-alignmen
 	if(cleanname)
 		name = cleanname
 	if(cleandesc)
-		name = cleandesc
+		desc = cleandesc

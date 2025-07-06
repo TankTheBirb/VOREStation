@@ -50,6 +50,8 @@
 		return 1
 	if (src && usr && usr.machine == src)
 		usr << browse(null, "window=stack")
+	if(islist(synths))
+		synths.Cut()
 	return ..()
 
 /obj/item/stack/update_icon()
@@ -333,11 +335,7 @@
 		S.add(transfer)
 		if (prob(transfer/orig_amount * 100))
 			transfer_fingerprints_to(S)
-			if(blood_DNA)
-				if(S.blood_DNA)
-					S.blood_DNA |= blood_DNA
-				else
-					S.blood_DNA = blood_DNA.Copy()
+			transfer_blooddna_to(S)
 		return transfer
 	return 0
 
@@ -360,8 +358,7 @@
 		newstack.color = color
 		if (prob(transfer/orig_amount * 100))
 			transfer_fingerprints_to(newstack)
-			if(blood_DNA)
-				newstack.blood_DNA |= blood_DNA
+			transfer_blooddna_to(newstack)
 		return newstack
 	return null
 
@@ -421,7 +418,11 @@
 	return
 
 /obj/item/stack/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/stack))
+	if(istype(W, /obj/item/gripper))
+		var/obj/item/gripper/G = W
+		G.consolidate_stacks(src)
+
+	else if(istype(W, /obj/item/stack))
 		var/obj/item/stack/S = W
 		src.transfer_to(S)
 

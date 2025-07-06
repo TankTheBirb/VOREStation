@@ -4,11 +4,17 @@
 	cycle_sloshed = FALSE
 
 	if(loc != owner)
-		if(istype(owner))
-			loc = owner
+		if(isAI(owner))
+			var/mob/living/silicon/ai/AI = owner
+			if(AI.holo && AI.holo.masters[AI])
+				if(loc != AI.holo.masters[AI])
+					loc = owner
 		else
-			qdel(src)
-			return
+			if(istype(owner))
+				loc = owner
+			else
+				qdel(src)
+				return
 
 	HandleBellyReagents()	// reagent belly stuff, here to jam it into subsystems and avoid too much cpu usage
 	update_belly_surrounding() // Updates belly_surrounding list for indirect vore usage
@@ -214,6 +220,8 @@
 				if((mode_flags & DM_FLAG_STRIPPING) && H.strip_pref) //Stripping pref check
 					for(var/slot in slots)
 						var/obj/item/I = H.get_equipped_item(slot = slot)
+						if(I.flags & NOSTRIP)
+							continue
 						if(I && H.unEquip(I, force = FALSE))
 							handle_digesting_item(I)
 							digestion_noise_chance = 25

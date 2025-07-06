@@ -51,6 +51,7 @@ GLOBAL_LIST_EMPTY(areas_by_type)
 	var/list/forced_ambience = null
 	var/sound_env = STANDARD_STATION
 	var/turf/base_turf //The base turf type of the area, which can be used to override the z-level's base turf
+	VAR_PROTECTED/color_grading = null // Color blending for clients that enter this area
 
 /area/New()
 	// Used by the maploader, this must be done in New, not init
@@ -372,7 +373,7 @@ GLOBAL_LIST_EMPTY(areas_by_type)
 
 //////////////////////////////////////////////////////////////////
 
-var/list/mob/living/forced_ambiance_list = new
+var/list/mob/living/forced_ambiance_list = list()
 
 /area/Entered(mob/M)
 	if(!istype(M) || !M.ckey)
@@ -396,6 +397,10 @@ var/list/mob/living/forced_ambiance_list = new
 	if(flag_check(AREA_NO_SPOILERS))
 		L.disable_spoiler_vision()
 	check_phase_shift(M)	//RS Port #658
+
+	// Update the area's color grading
+	if(L.client && L.client.color != get_color_tint()) // Try to check if we should bother changing before doing blending
+		L.update_client_color()
 
 /area/proc/play_ambience(var/mob/living/L, initial = TRUE)
 	// Ambience goes down here -- make sure to list each area seperately for ease of adding things in later, thanks! Note: areas adjacent to each other should have the same sounds to prevent cutoff when possible.- LastyScratch
@@ -558,23 +563,16 @@ GLOBAL_DATUM(spoiler_obfuscation_image, /image)
 		return (flags & flag) == flag
 	return flags & flag
 
-// RS Port #658 Start
-/area/proc/check_phase_shift(var/mob/ourmob)
+/area/proc/check_phase_shift(var/mob/living/ourmob)
 	if(!flag_check(AREA_BLOCK_PHASE_SHIFT) || !ourmob.is_incorporeal())
 		return
 	if(!isliving(ourmob))
 		return
 	if(ourmob.client?.holder)
 		return
-	if(issimplekin(ourmob))
-		var/mob/living/simple_mob/shadekin/SK = ourmob
-		if(SK.ability_flags & AB_PHASE_SHIFTED)
-			SK.phase_in(SK.loc)
-	if(ishuman(ourmob))
-		var/mob/living/carbon/human/SK = ourmob
-		if(SK.ability_flags & AB_PHASE_SHIFTED)
-			SK.phase_in(SK.loc)
-// RS Port #658 End
+	var/datum/component/shadekin/SK = ourmob.get_shadekin_component()
+	if(SK && SK.in_phase)
+		ourmob.phase_in(ourmob.loc, SK)
 
 /area/proc/isAlwaysIndoors()
 	return FALSE
@@ -584,3 +582,8 @@ GLOBAL_DATUM(spoiler_obfuscation_image, /image)
 
 /area/turbolift/isAlwaysIndoors()
 	return TRUE
+
+/// Gets a hex color value for blending with a player's client.color. Allows for primitive color grading per area.
+/area/proc/get_color_tint()
+	SHOULD_CALL_PARENT(TRUE)
+	return color_grading
