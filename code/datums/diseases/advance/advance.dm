@@ -58,8 +58,6 @@ GLOBAL_LIST_INIT(advance_cures, list(
 /datum/disease/advance/stage_act()
 	if(!..())
 		return FALSE
-	if(global_flag_check(virus_modifiers, DORMANT))
-		return FALSE
 	if(symptoms && length(symptoms))
 
 		if(!s_processing)
@@ -456,7 +454,7 @@ GLOBAL_LIST_INIT(advance_cures, list(
 		for(var/datum/disease/advance/AD in GLOB.active_diseases)
 			AD.Refresh()
 
-		H = tgui_input_list(src, "Choose infectee", "Infectees", human_mob_list)
+		H = tgui_input_list(src, "Choose infectee", "Infectees", GLOB.human_mob_list)
 
 		if(isnull(H))
 			return FALSE

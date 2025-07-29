@@ -99,7 +99,6 @@
 
 	if(new_character.client)
 		new_character.client.init_verbs() // re-initialize character specific verbs
-		new_character.set_listed_turf(null)
 
 /datum/mind/proc/store_memory(new_text)
 	memory += "[new_text]<BR>"
@@ -189,7 +188,7 @@
 		if(antag) antag.place_mob(src.current)
 
 	else if (href_list["role_edit"])
-		var/new_role = tgui_input_list(usr, "Select new role", "Assigned role", assigned_role, joblist)
+		var/new_role = tgui_input_list(usr, "Select new role", "Assigned role", assigned_role, GLOB.joblist)
 		if (!new_role) return
 		assigned_role = new_role
 
@@ -226,7 +225,7 @@
 			if(!def_value)//If it's a custom objective, it will be an empty string.
 				def_value = "custom"
 
-		var/list/choices = list("assassinate", "debrain", "protect", "prevent", "harm", "brig", "hijack", "escape", "survive", "steal", "download", "mercenary", "capture", "absorb", "custom")
+		var/list/choices = list("assassinate", "debrain", "protect", "prevent", "harm", "brig", "hijack", "escape", "survive", "steal", "mercenary", "capture", "absorb", "custom")
 		var/new_obj_type = tgui_input_list(usr, "Select objective type:", "Objective type", choices, def_value)
 		if (!new_obj_type) return
 
@@ -295,7 +294,7 @@
 				if (!steal.select_target())
 					return
 
-			if("download","capture","absorb", "vore")
+			if("capture","absorb", "vore")
 				var/def_num
 				if(objective&&objective.type==text2path("/datum/objective/[new_obj_type]"))
 					def_num = objective.target_amount
@@ -305,9 +304,6 @@
 					return
 
 				switch(new_obj_type)
-					if("download")
-						new_objective = new /datum/objective/download
-						new_objective.explanation_text = "Download [target_number] research levels."
 					if("capture")
 						new_objective = new /datum/objective/capture
 						new_objective.explanation_text = "Accumulate [target_number] capture points."
@@ -494,7 +490,7 @@
 		return 0
 
 /datum/mind/proc/get_ghost(even_if_they_cant_reenter)
-	for(var/mob/observer/dead/G in player_list)
+	for(var/mob/observer/dead/G in GLOB.player_list)
 		if(G.mind == src)
 			if(G.can_reenter_corpse || even_if_they_cant_reenter)
 				return G

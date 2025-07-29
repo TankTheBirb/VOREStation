@@ -1,4 +1,4 @@
-/client/proc/modify_robot(var/mob/living/silicon/robot/target in silicon_mob_list)
+/client/proc/modify_robot(var/mob/living/silicon/robot/target in GLOB.silicon_mob_list)
 	set name = "Modify Robot"
 	set desc = "Allows to add or remove modules to/from robots."
 	set category = "Admin.Silicon"
@@ -30,6 +30,7 @@
 	law_list = dd_sortedObjectList(law_list)
 
 /datum/eventkit/modify_robot/tgui_close()
+	target = null
 	if(source)
 		qdel(source)
 
@@ -63,7 +64,7 @@
 		.["target"]["crisis_override"] = target.crisis_override
 		.["target"]["active_restrictions"] = target.restrict_modules_to
 		var/list/possible_restrictions = list()
-		for(var/entry in robot_modules)
+		for(var/entry in GLOB.robot_modules)
 			if(!target.restrict_modules_to.Find(entry))
 				possible_restrictions += entry
 		.["target"]["possible_restrictions"] = possible_restrictions
@@ -74,7 +75,7 @@
 			.["target"]["sprite_size"] = spritesheet.icon_size_id(.["target"]["sprite"] + "S")
 			.["target"]["modules"] = get_target_items(user)
 			var/list/module_options = list()
-			for(var/module in robot_modules)
+			for(var/module in GLOB.robot_modules)
 				module_options += module
 			.["model_options"] = module_options
 			// Data for the upgrade options
@@ -122,7 +123,7 @@
 			if(source)
 				.["source"] += get_module_source(user, spritesheet)
 	var/list/all_robots = list()
-	for(var/mob/living/silicon/robot/R in silicon_mob_list)
+	for(var/mob/living/silicon/robot/R in GLOB.silicon_mob_list)
 		if(!R.loc)
 			continue
 		all_robots += list(list("displayText" = "[R]", "value" = "\ref[R]"))
@@ -190,7 +191,7 @@
 		if("select_source")
 			if(source)
 				qdel(source)
-			var/module_type = robot_modules[params["new_source"]]
+			var/module_type = GLOB.robot_modules[params["new_source"]]
 			if(ispath(module_type, /obj/item/robot_module/robot/syndicate))
 				source = new /mob/living/silicon/robot/syndicate(null)
 			else
@@ -282,7 +283,7 @@
 				return FALSE
 			var/mod_type = source.modtype
 			qdel(source.module)
-			var/module_type = robot_modules[target.modtype]
+			var/module_type = GLOB.robot_modules[target.modtype]
 			source.modtype = target.modtype
 			new module_type(source)
 			source.sprite_datum = target.sprite_datum
@@ -293,7 +294,7 @@
 			target.hud_used?.update_robot_modules_display(TRUE)
 			qdel(target.module)
 			target.modtype = mod_type
-			module_type = robot_modules[mod_type]
+			module_type = GLOB.robot_modules[mod_type]
 			target.transform_with_anim()
 			new module_type(target)
 			target.hands.icon_state = target.get_hud_module_icon()
@@ -586,13 +587,19 @@
 				to_chat(ui.user, span_notice("Laws displayed."))
 			return TRUE
 		if("select_ai")
-			selected_ai = locate(params["new_ai"])
+			selected_ai = params["new_ai"]
 			return TRUE
 		if("swap_sync")
-			var/new_ai = selected_ai ? selected_ai : select_active_ai_with_fewest_borgs()
-			if(new_ai)
+			var/mob/living/silicon/ai/our_ai
+			for(var/mob/living/silicon/ai/ai in GLOB.ai_list)
+				if(ai.name == selected_ai)
+					our_ai = ai
+					break
+			if(!our_ai)
+				our_ai = select_active_ai_with_fewest_borgs()
+			if(our_ai)
 				target.lawupdate = 1
-				target.connect_to_ai(new_ai)
+				target.connect_to_ai(our_ai)
 			return TRUE
 		if("disconnect_ai")
 			if(target.is_slaved())
@@ -649,7 +656,7 @@
 	var/list/all_upgrades = list()
 	var/list/whitelisted_upgrades = list()
 	var/list/blacklisted_upgrades = list()
-	for(var/datum/design/item/prosfab/robot_upgrade/restricted/upgrade)
+	for(var/datum/design_techweb/prosfab/robot_upgrade/restricted/upgrade as anything in subtypesof(/datum/design_techweb/prosfab/robot_upgrade/restricted))
 		if(!upgrade.name)
 			continue
 		if(!(initial(upgrade.build_path) in target.module.supported_upgrades))
@@ -659,14 +666,14 @@
 	all_upgrades["whitelisted_upgrades"] = whitelisted_upgrades
 	all_upgrades["blacklisted_upgrades"] = blacklisted_upgrades
 	var/list/utility_upgrades = list()
-	for(var/datum/design/item/prosfab/robot_upgrade/utility/upgrade)
+	for(var/datum/design_techweb/prosfab/robot_upgrade/utility/upgrade as anything in subtypesof(/datum/design_techweb/prosfab/robot_upgrade/utility))
 		if(!upgrade.name)
 			continue
 		if(!(target.has_upgrade(initial(upgrade.build_path))))
 			utility_upgrades += list(list("name" = initial(upgrade.name), "path" = "[initial(upgrade.build_path)]"))
 	all_upgrades["utility_upgrades"] = utility_upgrades
 	var/list/basic_upgrades = list()
-	for(var/datum/design/item/prosfab/robot_upgrade/basic/upgrade)
+	for(var/datum/design_techweb/prosfab/robot_upgrade/basic/upgrade as anything in subtypesof(/datum/design_techweb/prosfab/robot_upgrade/basic))
 		if(!upgrade.name)
 			continue
 		if(!(target.has_upgrade(initial(upgrade.build_path))))
@@ -675,7 +682,7 @@
 			basic_upgrades += list(list("name" = initial(upgrade.name), "path" = "[initial(upgrade.build_path)]", "installed" = 1))
 	all_upgrades["basic_upgrades"] = basic_upgrades
 	var/list/advanced_upgrades = list()
-	for(var/datum/design/item/prosfab/robot_upgrade/advanced/upgrade)
+	for(var/datum/design_techweb/prosfab/robot_upgrade/advanced/upgrade as anything in subtypesof(/datum/design_techweb/prosfab/robot_upgrade/advanced))
 		if(!upgrade.name)
 			continue
 		if(!(target.has_upgrade(initial(upgrade.build_path))))
@@ -684,7 +691,7 @@
 			advanced_upgrades += list(list("name" = initial(upgrade.name), "path" = "[initial(upgrade.build_path)]", "installed" = 1))
 	all_upgrades["advanced_upgrades"] = advanced_upgrades
 	var/list/restricted_upgrades = list()
-	for(var/datum/design/item/prosfab/robot_upgrade/restricted/upgrade)
+	for(var/datum/design_techweb/prosfab/robot_upgrade/restricted/upgrade as anything in subtypesof(/datum/design_techweb/prosfab/robot_upgrade/restricted))
 		if(!upgrade.name)
 			continue
 		if(!(target.has_upgrade(initial(upgrade.build_path))))

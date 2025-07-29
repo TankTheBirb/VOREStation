@@ -1,6 +1,6 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
 "aa" = (
-/obj/machinery/mecha_part_fabricator{
+/obj/machinery/mecha_part_fabricator_tg{
 	req_access = list()
 	},
 /obj/effect/floor_decal/milspec/color/black/half{
@@ -660,7 +660,7 @@
 /turf/simulated/floor/tiled/techmaint,
 /area/aro3/bar)
 "dM" = (
-/obj/machinery/mecha_part_fabricator/pros{
+/obj/machinery/mecha_part_fabricator_tg/prosthetics{
 	req_access = list()
 	},
 /obj/effect/floor_decal/milspec/color/black/half{
@@ -813,7 +813,7 @@
 "eG" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
 	dir = 8;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "aroboat3_docker";
 	pixel_x = 25;
 	req_one_access = list(777)
@@ -3525,7 +3525,7 @@
 /area/aro3/workshop)
 "wq" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "aroship3_boatbay";
 	pixel_y = 28
 	},
