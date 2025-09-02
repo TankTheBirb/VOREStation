@@ -17,3 +17,10 @@
   - bugfix: Fbp backup battery icon fixed
   Zizzi:
   - bugfix: Fixed circuitry pins being constrained to numbers no larger than 52..
+2025-09-02:
+  Ryumi:
+  - bugfix: Fixed great white carp turning into failsneks on death.
+  Tenryumi:
+  - bugfix: Fixed the dosimeter film having a missing icon.
+  Tost:
+  - bugfix: boat cloak, colorable can have its description and name changed on loadout.
